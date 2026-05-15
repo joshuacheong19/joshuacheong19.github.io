@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chinese Soybean Crush Margin — Joshua Cheong</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:        #f4f4f4;
+    --white:     #ffffff;
+    --ink:       #161616;
+    --ink-mid:   #393939;
+    --ink-dim:   #6f6f6f;
+    --ink-faint: #a8a8a8;
+    --rule:      #e0e0e0;
+    --rule-dark: #c6c6c6;
+    --green:     #0a6640;
+    --green-bg:  #e6f4ee;
+    --red:       #a2191f;
+    --amber:     #8a3800;
+    --sans: 'IBM Plex Sans', sans-serif;
+    --mono: 'IBM Plex Mono', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { font-size: 14px; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-weight: 300;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── MASTHEAD ── */
+  .masthead {
+    background: var(--ink);
+    border-bottom: 2px solid var(--green);
+  }
+  .masthead-inner {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 44px;
+  }
+  .masthead-name {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 400;
+    color: #c6c6c6;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .masthead-meta {
+    display: flex;
+    gap: 32px;
+  }
+  .masthead-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: #525252;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--ink);
+    padding: 52px 0 44px;
+  }
+  .hero-inner {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 40px;
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 56px;
+    align-items: end;
+  }
+  .hero-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 400;
+    color: var(--green);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+  .hero-title {
+    font-family: var(--sans);
+    font-size: clamp(24px, 3.2vw, 40px);
+    font-weight: 300;
+    color: #f4f4f4;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+  }
+  .hero-title strong {
+    font-weight: 600;
+    color: #ffffff;
+  }
+  .hero-stack {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: #525252;
+    letter-spacing: 0.05em;
+    margin-top: 20px;
+    line-height: 2;
+  }
+  .hero-kpis {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding-bottom: 2px;
+    border-left: 1px solid #2d2d2d;
+    padding-left: 32px;
+  }
+  .kpi { display: flex; flex-direction: column; gap: 4px; }
+  .kpi-val {
+    font-family: var(--mono);
+    font-size: 32px;
+    font-weight: 300;
+    color: #6fdc8c;
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .kpi-val.neg { color: #ff8389; }
+  .kpi-val.neu { color: #8d8d8d; }
+  .kpi-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: #525252;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* ── LAYOUT ── */
+  .main {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 44px 40px 80px;
+  }
+
+  /* ── SECTION HEADER ── */
+  .sh {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-bottom: 20px;
+    margin-top: 44px;
+  }
+  .sh:first-of-type { margin-top: 0; }
+  .sh-num {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--ink-faint);
+    letter-spacing: 0.1em;
+    margin-right: 12px;
+    min-width: 24px;
+  }
+  .sh-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    font-weight: 500;
+    color: var(--ink-dim);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  .sh-rule {
+    flex: 1;
+    height: 1px;
+    background: var(--rule);
+    margin-left: 16px;
+  }
+
+  /* ── ABSTRACT ── */
+  .abstract-grid {
+    display: grid;
+    grid-template-columns: 1fr 220px;
+    gap: 0;
+    border: 1px solid var(--rule);
+    background: var(--white);
+    margin-bottom: 0;
+  }
+  .abstract-body {
+    padding: 28px 32px;
+    border-right: 1px solid var(--rule);
+  }
+  .abstract-body p {
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 1.75;
+    color: var(--ink-mid);
+  }
+  .abstract-body p b {
+    font-weight: 500;
+    color: var(--ink);
+  }
+  .abstract-meta {
+    padding: 20px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 16px;
+    background: #f9f9f9;
+  }
+  .meta-row { display: flex; flex-direction: column; gap: 2px; }
+  .meta-label {
+    font-family: var(--mono);
+    font-size: 8px;
+    color: var(--ink-faint);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .meta-val {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-mid);
+    font-weight: 400;
+  }
+  .meta-divider { height: 1px; background: var(--rule); }
+
+  /* ── PERF STRIP ── */
+  .perf-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border: 1px solid var(--rule);
+    border-top: none;
+  }
+  .perf-cell {
+    background: var(--white);
+    padding: 20px 22px 18px;
+    border-right: 1px solid var(--rule);
+    border-top: 2px solid var(--green);
+    position: relative;
+  }
+  .perf-cell:last-child { border-right: none; }
+  .perf-cell.warn { border-top-color: var(--amber); }
+  .perf-cell.neg  { border-top-color: var(--red); }
+  .perf-cell.neu  { border-top-color: var(--rule-dark); }
+  .perf-label {
+    font-family: var(--mono);
+    font-size: 8px;
+    letter-spacing: 0.14em;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    font-weight: 400;
+  }
+  .perf-val {
+    font-family: var(--mono);
+    font-size: 34px;
+    font-weight: 300;
+    color: var(--green);
+    line-height: 1;
+    margin-bottom: 6px;
+    letter-spacing: -0.02em;
+  }
+  .perf-val.warn { color: var(--amber); }
+  .perf-val.neg  { color: var(--red); }
+  .perf-val.neu  { color: var(--ink-dim); }
+  .perf-note {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--ink-faint);
+    line-height: 1.55;
+    font-weight: 300;
+  }
+
+  /* ── CHART ── */
+  .chart-card {
+    background: var(--white);
+    border: 1px solid var(--rule);
+    padding: 24px 28px 20px;
+  }
+  .chart-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 20px;
+  }
+  .chart-title {
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink);
+    letter-spacing: 0;
+  }
+  .chart-sub {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--ink-faint);
+    margin-top: 3px;
+    letter-spacing: 0.03em;
+  }
+  .chart-legend {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+  }
+  .leg {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--ink-faint);
+  }
+  .leg-line { width: 18px; height: 1px; background: var(--green); }
+  .leg-line.dash { background: none; border-top: 1px dashed var(--rule-dark); }
+
+  /* ── TWO COL ── */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+  }
+  .panel { background: var(--white); }
+  .panel-head {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f9f9f9;
+  }
+  .panel-title {
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink);
+    letter-spacing: 0;
+  }
+  .panel-sub {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--ink-faint);
+    letter-spacing: 0.06em;
+  }
+  .panel-body { padding: 20px; }
+
+  /* ── REGIME ── */
+  .regime-stack { display: flex; flex-direction: column; gap: 16px; }
+  .regime-item { display: flex; flex-direction: column; gap: 6px; }
+  .regime-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .regime-name {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 400;
+    color: var(--ink-mid);
+    letter-spacing: 0.04em;
+  }
+  .regime-pct {
+    font-family: var(--mono);
+    font-size: 20px;
+    font-weight: 300;
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .regime-bar {
+    height: 2px;
+    background: var(--rule);
+  }
+  .regime-fill {
+    height: 100%;
+    transition: width 1.4s cubic-bezier(0.16,1,0.3,1);
+  }
+  .regime-foot {
+    display: flex;
+    justify-content: space-between;
+  }
+  .regime-count {
+    font-family: var(--mono);
+    font-size: 8px;
+    color: var(--ink-faint);
+    letter-spacing: 0.06em;
+  }
+  .regime-tag {
+    font-family: var(--mono);
+    font-size: 8px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .r-div { height: 1px; background: var(--rule); }
+
+  /* ── TABLE ── */
+  .dt { width: 100%; border-collapse: collapse; }
+  .dt th {
+    font-family: var(--mono);
+    font-size: 8px;
+    letter-spacing: 0.14em;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    text-align: left;
+    padding: 8px 14px;
+    border-bottom: 1px solid var(--rule-dark);
+    background: #f9f9f9;
+    font-weight: 400;
+  }
+  .dt th:not(:first-child) { text-align: right; }
+  .dt td {
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--rule);
+    color: var(--ink-mid);
+    font-weight: 300;
+  }
+  .dt td:not(:first-child) { text-align: right; }
+  .dt tr:last-child td { border-bottom: none; }
+  .dt tr:hover td { background: #fafafa; }
+  .pos { color: var(--green); font-weight: 500; }
+  .spark {
+    display: inline-block;
+    width: 44px; height: 2px;
+    background: var(--rule);
+    vertical-align: middle;
+    position: relative;
+  }
+  .sf {
+    position: absolute;
+    left: 0; top: 0;
+    height: 100%;
+    background: var(--green);
+  }
+
+  /* ── FINDING ── */
+  .finding {
+    background: var(--green-bg);
+    border-left: 3px solid var(--green);
+    padding: 20px 24px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 32px;
+    align-items: center;
+  }
+  .finding-text {
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--ink-mid);
+    line-height: 1.7;
+  }
+  .finding-text b { font-weight: 500; color: var(--ink); }
+  .finding-kpi { text-align: right; }
+  .finding-kpi-val {
+    font-family: var(--mono);
+    font-size: 32px;
+    font-weight: 300;
+    color: var(--green);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .finding-kpi-label {
+    font-family: var(--mono);
+    font-size: 8px;
+    color: var(--ink-faint);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  /* ── METHOD ── */
+  .method-grid {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+  }
+  .mc {
+    background: var(--white);
+    padding: 22px 22px;
+  }
+  .mc-step {
+    font-family: var(--mono);
+    font-size: 8px;
+    color: var(--ink-faint);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .mc-num {
+    display: inline-flex;
+    width: 16px; height: 16px;
+    background: var(--ink);
+    color: var(--bg);
+    font-size: 8px;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+  .mc-title {
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 10px;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+  .mc-desc {
+    font-size: 12px;
+    font-weight: 300;
+    color: var(--ink-dim);
+    line-height: 1.65;
+  }
+
+  /* ── CTA ── */
+  .cta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 28px 0;
+    border-top: 1px solid var(--rule-dark);
+    margin-top: 0;
+  }
+  .btn-p {
+    font-family: var(--mono);
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--white);
+    background: var(--ink);
+    padding: 12px 24px;
+    text-decoration: none;
+    transition: background 0.15s;
+  }
+  .btn-p:hover { background: var(--green); }
+  .btn-s {
+    font-family: var(--mono);
+    font-size: 9px;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    border: 1px solid var(--rule-dark);
+    padding: 11px 24px;
+    text-decoration: none;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .btn-s:hover { border-color: var(--ink); color: var(--ink); }
+  .cta-note {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--ink-faint);
+    margin-left: auto;
+    letter-spacing: 0.04em;
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    background: var(--ink);
+    padding: 16px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .footer-l {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: #525252;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .footer-r {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: #3d3d3d;
+    letter-spacing: 0.05em;
+  }
+
+  /* ── SPACING UTILS ── */
+  .mt0 { margin-top: 0; }
+  .mb1 { margin-bottom: 1px; }
+  .mb20 { margin-bottom: 20px; }
+
+  /* ── ANIM ── */
+  @keyframes up {
+    from { opacity:0; transform:translateY(6px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  .a { opacity:0; animation: up 0.45s ease forwards; }
+  .a1{animation-delay:.00s} .a2{animation-delay:.07s}
+  .a3{animation-delay:.14s} .a4{animation-delay:.21s}
+
+  @media(max-width:760px){
+    .hero-inner,.abstract-grid,.two-col,.method-grid,.finding{grid-template-columns:1fr}
+    .perf-strip{grid-template-columns:repeat(2,1fr)}
+    .hero-kpis{border-left:none;padding-left:0;border-top:1px solid #2d2d2d;padding-top:20px}
+    .abstract-meta{border-top:1px solid var(--rule)}
+    .main{padding:32px 20px 60px}
+    .hero-inner{padding:0 20px}
+    .masthead-inner,.footer{padding:14px 20px}
+    .masthead-meta{display:none}
+    .finding-kpi{text-align:left}
+  }
+</style>
+</head>
+<body>
+
+<!-- MASTHEAD -->
+<div class="masthead">
+  <div class="masthead-inner">
+    <span class="masthead-name">Joshua Cheong</span>
+    <div class="masthead-meta">
+      <span class="masthead-tag">Quantitative Research</span>
+      <span class="masthead-tag">April 2026</span>
+      <span class="masthead-tag">NTU Finance</span>
+    </div>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-label">Systematic Commodities · DCE Soybean Meal Futures</div>
+      <h1 class="hero-title">
+        Chinese Soybean Crush Margin<br>
+        <strong>Mean Reversion:</strong> A Regime-Filtered Signal
+      </h1>
+      <div class="hero-stack">
+        Python · Bloomberg BQL · BQuant<br>
+        CBOT &nbsp;·&nbsp; DCE &nbsp;·&nbsp; JCIQSONT &nbsp;·&nbsp; 2018–2026 Tariff Regimes
+      </div>
+    </div>
+    <div class="hero-kpis">
+      <div class="kpi">
+        <div class="kpi-val">12.8%</div>
+        <div class="kpi-label">CAGR</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-val">0.97</div>
+        <div class="kpi-label">In-Market Sharpe</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-val neg">−20.6%</div>
+        <div class="kpi-label">Max Drawdown</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- I. ABSTRACT -->
+  <div class="sh mt0">
+    <span class="sh-num">01</span>
+    <span class="sh-label">Executive Summary</span>
+    <div class="sh-rule"></div>
+  </div>
+  <div class="abstract-grid mb1">
+    <div class="abstract-body">
+      <p>A systematic mean-reversion signal for <b>DCE soybean meal futures</b> built on Chinese crusher economics. Chinese crushing plants face a 2–3 week production-response lag when margins reach extremes, creating temporary dislocations between futures prices and physical economics. A naïve implementation produces statistically significant edge across 2021–2023 but <b>collapses entirely during 2024–2025</b> due to structural port inventory accumulation. The failure is resolved by a <b>regime filter on the 12-week change in Chinese port stocks</b>, which produces a clean monotonic relationship with signal win rate and restores positive performance across the full sample — including the previously broken years.</p>
+    </div>
+    <div class="abstract-meta">
+      <div class="meta-row"><span class="meta-label">Period</span><span class="meta-val">Apr 2021 – Apr 2026</span></div>
+      <div class="meta-divider"></div>
+      <div class="meta-row"><span class="meta-label">Instrument</span><span class="meta-val">DCE Soybean Meal</span></div>
+      <div class="meta-divider"></div>
+      <div class="meta-row"><span class="meta-label">Total Trades</span><span class="meta-val">~640</span></div>
+      <div class="meta-divider"></div>
+      <div class="meta-row"><span class="meta-label">Time in Market</span><span class="meta-val">47% of days</span></div>
+      <div class="meta-divider"></div>
+      <div class="meta-row"><span class="meta-label">Slippage</span><span class="meta-val">0.1% round-trip</span></div>
+    </div>
+  </div>
+
+  <!-- PERF STRIP -->
+  <div class="perf-strip mb20">
+    <div class="perf-cell a a1">
+      <div class="perf-label">CAGR · Net Slippage</div>
+      <div class="perf-val">12.8%</div>
+      <div class="perf-note">Final equity 1.83×<br>from start = 1.0</div>
+    </div>
+    <div class="perf-cell a a2">
+      <div class="perf-label">In-Market Sharpe</div>
+      <div class="perf-val">0.97</div>
+      <div class="perf-note">In-trade periods only<br>Full-period Sharpe: 0.67</div>
+    </div>
+    <div class="perf-cell neg a a3">
+      <div class="perf-label">Maximum Drawdown</div>
+      <div class="perf-val neg">−20.6%</div>
+      <div class="perf-note">2022 Russia–Ukraine<br>commodity shock</div>
+    </div>
+    <div class="perf-cell warn a a4">
+      <div class="perf-label">Time in Market</div>
+      <div class="perf-val warn">47%</div>
+      <div class="perf-note">Flat in building<br>inventory regimes</div>
+    </div>
+  </div>
+
+  <!-- II. EQUITY CURVE -->
+  <div class="sh">
+    <span class="sh-num">02</span>
+    <span class="sh-label">Equity Curve</span>
+    <div class="sh-rule"></div>
+  </div>
+  <div class="chart-card mb20">
+    <div class="chart-top">
+      <div>
+        <div class="chart-title">Strategy Equity — Port Filter + 2× ATR Stop</div>
+        <div class="chart-sub">Start = 1.0 &nbsp;·&nbsp; Daily accounting &nbsp;·&nbsp; Net of 0.1% round-trip slippage &nbsp;·&nbsp; April 2021 – April 2026</div>
+      </div>
+      <div class="chart-legend">
+        <div class="leg"><div class="leg-line"></div>Strategy</div>
+        <div class="leg"><div class="leg-line dash"></div>1.0 baseline</div>
+      </div>
+    </div>
+    <svg viewBox="0 0 960 200" width="100%" style="display:block">
+      <defs>
+        <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#0a6640" stop-opacity="0.07"/>
+          <stop offset="100%" stop-color="#0a6640" stop-opacity="0"/>
+        </linearGradient>
+        <clipPath id="cl"><rect x="60" y="8" width="888" height="164"/></clipPath>
+      </defs>
+      <!-- Y labels -->
+      <text x="54" y="14"  fill="#a8a8a8" font-size="8" text-anchor="end" font-family="IBM Plex Mono">1.85</text>
+      <text x="54" y="55"  fill="#a8a8a8" font-size="8" text-anchor="end" font-family="IBM Plex Mono">1.60</text>
+      <text x="54" y="96"  fill="#a8a8a8" font-size="8" text-anchor="end" font-family="IBM Plex Mono">1.35</text>
+      <text x="54" y="137" fill="#a8a8a8" font-size="8" text-anchor="end" font-family="IBM Plex Mono">1.10</text>
+      <text x="54" y="172" fill="#a8a8a8" font-size="8" text-anchor="end" font-family="IBM Plex Mono">1.00</text>
+      <!-- Grid lines -->
+      <g stroke="#e0e0e0" stroke-width="0.5">
+        <line x1="60" y1="10"  x2="948" y2="10"/>
+        <line x1="60" y1="51"  x2="948" y2="51"/>
+        <line x1="60" y1="92"  x2="948" y2="92"/>
+        <line x1="60" y1="133" x2="948" y2="133"/>
+      </g>
+      <!-- Baseline -->
+      <line x1="60" y1="168" x2="948" y2="168" stroke="#c6c6c6" stroke-width="0.8" stroke-dasharray="4,4"/>
+      <!-- X labels -->
+      <g font-size="8" fill="#a8a8a8" text-anchor="middle" font-family="IBM Plex Mono">
+        <text x="60"  y="190">2021</text>
+        <text x="210" y="190">2022</text>
+        <text x="360" y="190">2023</text>
+        <text x="510" y="190">2024</text>
+        <text x="660" y="190">2025</text>
+        <text x="810" y="190">2026</text>
+      </g>
+      <!-- Year dividers -->
+      <g stroke="#e0e0e0" stroke-width="0.5" stroke-dasharray="3,4">
+        <line x1="210" y1="8" x2="210" y2="172"/>
+        <line x1="360" y1="8" x2="360" y2="172"/>
+        <line x1="510" y1="8" x2="510" y2="172"/>
+        <line x1="660" y1="8" x2="660" y2="172"/>
+        <line x1="810" y1="8" x2="810" y2="172"/>
+      </g>
+      <!-- Curve (y: 1.0=168, 1.85=10 → 158px / 0.85 = 185.9px per unit) -->
+      <g clip-path="url(#cl)">
+        <path d="M60,168 L78,165 L96,159 L112,155 L126,151 L138,155 L152,152 L168,147 L182,143 L196,140 L210,135 L226,141 L240,145 L254,150 L268,146 L282,142 L296,138 L310,133 L324,129 L340,125 L360,120 L376,115 L392,111 L408,107 L424,102 L440,98 L456,94 L472,91 L488,88 L510,84 L526,88 L542,93 L556,97 L568,93 L582,89 L596,85 L610,82 L626,78 L642,74 L660,70 L676,67 L692,63 L706,60 L720,57 L736,54 L750,51 L760,54 L774,58 L784,61 L796,59 L810,56 L828,52 L844,49 L860,46 L876,43 L892,40 L910,37 L928,34 L948,31" fill="url(#g)" stroke="none"/>
+        <path d="M60,168 L78,165 L96,159 L112,155 L126,151 L138,155 L152,152 L168,147 L182,143 L196,140 L210,135 L226,141 L240,145 L254,150 L268,146 L282,142 L296,138 L310,133 L324,129 L340,125 L360,120 L376,115 L392,111 L408,107 L424,102 L440,98 L456,94 L472,91 L488,88 L510,84 L526,88 L542,93 L556,97 L568,93 L582,89 L596,85 L610,82 L626,78 L642,74 L660,70 L676,67 L692,63 L706,60 L720,57 L736,54 L750,51 L760,54 L774,58 L784,61 L796,59 L810,56 L828,52 L844,49 L860,46 L876,43 L892,40 L910,37 L928,34 L948,31" fill="none" stroke="#0a6640" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+      </g>
+      <!-- Final badge -->
+      <rect x="908" y="20" width="38" height="13" fill="#0a6640"/>
+      <text x="927" y="29.5" fill="#ffffff" font-size="7.5" text-anchor="middle" font-weight="500" font-family="IBM Plex Mono">+83%</text>
+    </svg>
+  </div>
+
+  <!-- III. REGIME + YEAR -->
+  <div class="sh">
+    <span class="sh-num">03</span>
+    <span class="sh-label">Regime Filter &amp; Annual Returns</span>
+    <div class="sh-rule"></div>
+  </div>
+  <div class="two-col mb20">
+
+    <!-- REGIME BARS -->
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-title">Regime Win Rate by Port Stock Change</span>
+        <span class="panel-sub">12-week Δ</span>
+      </div>
+      <div class="panel-body">
+        <div class="regime-stack">
+          <div class="regime-item">
+            <div class="regime-top">
+              <span class="regime-name">DESTOCKING &nbsp;<span style="color:var(--ink-faint);font-size:9px">&lt; −200k t</span></span>
+              <span class="regime-pct" style="color:var(--green)">68%</span>
+            </div>
+            <div class="regime-bar"><div class="regime-fill" id="r1" style="width:0%;background:var(--green)"></div></div>
+            <div class="regime-foot">
+              <span class="regime-count">106 trades</span>
+              <span class="regime-tag" style="color:var(--green)">Strongly positive</span>
+            </div>
+          </div>
+          <div class="r-div"></div>
+          <div class="regime-item">
+            <div class="regime-top">
+              <span class="regime-name">FLAT &nbsp;<span style="color:var(--ink-faint);font-size:9px">±200k t</span></span>
+              <span class="regime-pct" style="color:var(--amber)">62%</span>
+            </div>
+            <div class="regime-bar"><div class="regime-fill" id="r2" style="width:0%;background:var(--amber)"></div></div>
+            <div class="regime-foot">
+              <span class="regime-count">226 trades</span>
+              <span class="regime-tag" style="color:var(--amber)">Positive</span>
+            </div>
+          </div>
+          <div class="r-div"></div>
+          <div class="regime-item">
+            <div class="regime-top">
+              <span class="regime-name">BUILDING &nbsp;<span style="color:var(--ink-faint);font-size:9px">&gt; +200k t</span></span>
+              <span class="regime-pct" style="color:var(--red)">34%</span>
+            </div>
+            <div class="regime-bar"><div class="regime-fill" id="r3" style="width:0%;background:var(--red)"></div></div>
+            <div class="regime-foot">
+              <span class="regime-count">158 trades &nbsp;·&nbsp; <b style="color:var(--red)">SUPPRESSED</b></span>
+              <span class="regime-tag" style="color:var(--red)">Negative</span>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:18px;padding-top:12px;border-top:1px solid var(--rule)">
+          <div style="font-family:var(--mono);font-size:9px;color:var(--ink-faint);line-height:1.7">
+            Direction of change gates the signal — not the level.<br>
+            Corr(12w Δstocks, fwd 10d return) = <span style="color:var(--red)">−0.12</span> &nbsp;vs&nbsp; level corr = −0.01
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- YEAR TABLE -->
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-title">Year-by-Year Returns</span>
+        <span class="panel-sub">All years positive</span>
+      </div>
+      <div class="panel-body" style="padding:0">
+        <table class="dt">
+          <thead>
+            <tr><th>Period</th><th>Return</th><th>Days</th><th></th></tr>
+          </thead>
+          <tbody>
+            <tr><td>2021 (Apr–Dec)</td><td class="pos">+16.8%</td><td>68</td><td><span class="spark"><span class="sf" style="width:100%"></span></span></td></tr>
+            <tr><td>2022</td><td class="pos">+11.6%</td><td>143</td><td><span class="spark"><span class="sf" style="width:69%"></span></span></td></tr>
+            <tr><td>2023</td><td class="pos">+13.7%</td><td>73</td><td><span class="spark"><span class="sf" style="width:82%"></span></span></td></tr>
+            <tr><td>2024</td><td class="pos">+8.3%</td><td>126</td><td><span class="spark"><span class="sf" style="width:49%"></span></span></td></tr>
+            <tr><td>2025</td><td class="pos">+9.8%</td><td>95</td><td><span class="spark"><span class="sf" style="width:58%"></span></span></td></tr>
+            <tr><td>2026 (Jan–Apr)</td><td class="pos">+6.9%</td><td>54</td><td><span class="spark"><span class="sf" style="width:41%"></span></span></td></tr>
+          </tbody>
+        </table>
+        <div style="padding:12px 14px;border-top:1px solid var(--rule)">
+          <div style="font-family:var(--mono);font-size:9px;color:var(--ink-faint);line-height:1.7">
+            OOS (Jan 2024 – Apr 2026) · 322 trades<br>
+            Mean return/trade: <span style="color:var(--ink)">+0.72%</span> &nbsp;·&nbsp; Win rate: <span style="color:var(--ink)">50.6%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FINDING -->
+  <div class="finding mb20">
+    <div class="finding-text">The principal contribution is the <b>regime-filter methodology</b> — demonstrating that crush margin mean reversion is <b>conditional on physical inventory dynamics</b>, with a clean monotonic relationship between port stock accumulation rate and signal win rate. This finding has direct implications for any participant trading the Chinese soybean crush complex.</div>
+    <div class="finding-kpi">
+      <div class="finding-kpi-val">68%</div>
+      <div class="finding-kpi-label">Win Rate<br>Destocking Regime</div>
+    </div>
+  </div>
+
+  <!-- IV. METHODOLOGY -->
+  <div class="sh">
+    <span class="sh-num">04</span>
+    <span class="sh-label">Methodology</span>
+    <div class="sh-rule"></div>
+  </div>
+  <div class="method-grid mb20">
+    <div class="mc">
+      <div class="mc-step"><span class="mc-num">1</span>Signal</div>
+      <div class="mc-title">Crush Margin Percentile</div>
+      <div class="mc-desc">Brazilian landed-cost parity model integrating CBOT, DCE, FX, and FOB premiums across seven US-origin tariff regimes spanning 2018–2025. Margin ranked in a trailing 504-day window. Long below 15th percentile; short above 85th. Positions held 10 business days.</div>
+    </div>
+    <div class="mc">
+      <div class="mc-step"><span class="mc-num">2</span>Filter</div>
+      <div class="mc-title">Port Stock Regime Gate</div>
+      <div class="mc-desc">12-week change in Chinese imported soybean port stocks (Bloomberg: JCIQSONT, source Shanghai JC Intelligence). When stocks build at &gt;+200k tonnes per 12 weeks, the crusher response mechanism cannot complete within the signal horizon. Building-regime triggers are suppressed entirely.</div>
+    </div>
+    <div class="mc">
+      <div class="mc-step"><span class="mc-num">3</span>Risk</div>
+      <div class="mc-title">2× ATR Volatility Stop</div>
+      <div class="mc-desc">2× 20-day realised volatility stop per trade — a standard managed futures convention, not an optimised parameter. No in-sample fitting on the multiplier. Stops checked daily at close. Calmar ratio of 0.6 is the strategy's principal risk consideration for production deployment.</div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta">
+    <a href="Chinese_Soybean_Crush_Margin_Mean_Reversion_A_Regime_Filtered_Signal.pdf" class="btn-p" target="_blank">Read Full Paper &nbsp;↗</a>
+    <a href="mailto:joshuacheong9819@gmail.com" class="btn-s">Get in Touch</a>
+    <span class="cta-note">9-page research note &nbsp;·&nbsp; Bloomberg data &nbsp;·&nbsp; April 2026</span>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <span class="footer-l">Joshua Cheong &nbsp;·&nbsp; NTU Finance 2027</span>
+  <span class="footer-r">joshuacheong9819@gmail.com</span>
+</div>
+
+<script>
+  window.addEventListener('load', () => {
+    setTimeout(() => { document.getElementById('r1').style.width = '68%'; }, 300);
+    setTimeout(() => { document.getElementById('r2').style.width = '62%'; }, 460);
+    setTimeout(() => { document.getElementById('r3').style.width = '34%'; }, 620);
+  });
+</script>
+</body>
+</html>
